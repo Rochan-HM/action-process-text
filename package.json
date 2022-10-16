@@ -13,6 +13,7 @@
     "android",
     "ios",
     "cpp",
+    "app.plugin.js",
     "*.podspec",
     "!lib/typescript/example",
     "!ios/build",
@@ -47,7 +48,7 @@
   },
   "homepage": "https://github.com/Rochan-HM/action-process-text#readme",
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+    "registry": "https://npm.pkg.github.com"
   },
   "devDependencies": {
     "@arkweid/lefthook": "^0.7.7",
