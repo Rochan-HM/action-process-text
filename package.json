@@ -1,5 +1,5 @@
 {
-  "name": "rn-action-process-text",
+  "name": "@rochan-hm/rn-action-process-text",
   "version": "0.1.0",
   "description": "test",
   "main": "lib/commonjs/index",
