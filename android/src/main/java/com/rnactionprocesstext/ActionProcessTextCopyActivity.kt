@@ -1,15 +1,16 @@
 package com.rnactionprocesstext
 
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-
 import androidx.annotation.RequiresApi
-
 import com.facebook.react.ReactActivity
+
 
 class ActionProcessTextCopyActivity : ReactActivity() {
 
@@ -46,15 +47,31 @@ class ActionProcessTextCopyActivity : ReactActivity() {
         }
       }
 
-      val url: String = storage.get("url").let { it ?: "http://10.0.2.2" }
+      val url: String = storage.get("SERVER_URL") ?: ""
+      val copyToClipboard = storage.get("COPY_TO_CLIPBOARD").let { it ?: "false" }.toBoolean()
+
+      Log.d("CopyToClipboard", copyToClipboard.toString())
+
+      val token = Auth(storage, null).getValidToken()
+
+      if (token == null) {
+        Toast.makeText(this, "You are not logged in", Toast.LENGTH_LONG).show()
+        return
+      }
 
       val req = CopyTextRequest(
-        url = "$url/copy",
+        url = "$url/api/copy",
         body = CopyTextRequestBody(text = text.toString(), readonly = readonly)
       )
       Requests.post(req, { result ->
         Log.d("Result", result)
         Toast.makeText(this, "Copied text!", Toast.LENGTH_SHORT).show()
+
+        if (copyToClipboard) {
+          val clipboard: ClipboardManager = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+          val clip = ClipData.newPlainText("Copied content", text)
+          clipboard.setPrimaryClip(clip)
+        }
       }, { error ->
         Log.d("Error", error.toString())
         Toast.makeText(this, "Unable to copy text!", Toast.LENGTH_SHORT).show()

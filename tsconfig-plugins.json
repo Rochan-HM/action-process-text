@@ -1,0 +1,7 @@
+{
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "compilerOptions": {
+    "declaration": true
+  },
+  "include": ["./app.plugin.ts"]
+}

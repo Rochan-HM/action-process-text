@@ -48,7 +48,7 @@ class ActionProcessTextPasteActivity : ReactActivity() {
         return
       }
 
-      val url: String = storage.get("url").let { it ?: "http://10.0.2.2" }
+      val url: String = storage.get("url").let { it ?: "http://10.0.2.2:8000" }
 
       val req = PasteTextRequest(
         url = "$url/paste",

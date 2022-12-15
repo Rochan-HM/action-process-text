@@ -17,43 +17,111 @@ const config_plugins_1 = require("@expo/config-plugins");
       </intent-filter>
   </activity>
  */
-const COPY_ACTIVITY_NAME = "com.rnactionprocesstext.ActionProcessTextCopyActivity";
-const COPY_ACTIVITY_LABEL = "Copy Selection";
-const PASTE_ACTIVITY_NAME = "com.rnactionprocesstext.ActionProcessTextPasteActivity";
-const PASTE_ACTIVITY_LABEL = "Paste Selection";
-const LAUNCH_MODE = "singleTop";
-const ANDROID_THEME = "@style/Theme.AppCompat.Transparent.NoActionBar";
+const COPY_ACTIVITY_NAME = 'com.rnactionprocesstext.ActionProcessTextCopyActivity';
+const COPY_ACTIVITY_LABEL = 'Copy Selection';
+const PASTE_ACTIVITY_NAME = 'com.rnactionprocesstext.ActionProcessTextPasteActivity';
+const PASTE_ACTIVITY_LABEL = 'Paste Selection';
+const LAUNCH_MODE = 'singleTop';
+const ANDROID_THEME = '@style/Theme.Transparent';
+const modifyAndroidStyles = (config) => {
+    /*
+    <style name="Theme.Transparent" parent="@style/Theme.AppCompat.Transparent.NoActionBar">
+      <item name="android:windowIsTranslucent">true</item>
+      <item name="android:windowBackground">@android:color/transparent</item>
+      <item name="android:windowContentOverlay">@null</item>
+      <item name="android:windowNoTitle">true</item>
+      <item name="android:windowIsFloating">true</item>
+      <item name="android:backgroundDimEnabled">false</item>
+    </style>
+    */
+    return (0, config_plugins_1.withAndroidStyles)(config, (config) => {
+        config.modResults = {
+            ...config.modResults,
+            resources: {
+                ...config.modResults.resources,
+                style: [
+                    ...(config.modResults.resources.style || []),
+                    {
+                        $: {
+                            name: 'Theme.Transparent',
+                            parent: '@style/Theme.AppCompat.Transparent.NoActionBar',
+                        },
+                        item: [
+                            {
+                                $: {
+                                    name: 'android:windowIsTranslucent',
+                                },
+                                _: 'true',
+                            },
+                            {
+                                $: {
+                                    name: 'android:windowBackground',
+                                },
+                                _: '@android:color/transparent',
+                            },
+                            {
+                                $: {
+                                    name: 'android:windowContentOverlay',
+                                },
+                                _: '@null',
+                            },
+                            {
+                                $: {
+                                    name: 'android:windowNoTitle',
+                                },
+                                _: 'true',
+                            },
+                            {
+                                $: {
+                                    name: 'android:windowIsFloating',
+                                },
+                                _: 'true',
+                            },
+                            {
+                                $: {
+                                    name: 'android:backgroundDimEnabled',
+                                },
+                                _: 'false',
+                            },
+                        ],
+                    },
+                ],
+            },
+        };
+        return config;
+    });
+};
 const modifyAndroidManifest = (config, { activityName, activityLabel, activityLaunchMode, androidTheme }) => {
-    return config_plugins_1.withAndroidManifest(config, (config) => {
+    return (0, config_plugins_1.withAndroidManifest)(config, (config) => {
         const mainApplication = config_plugins_1.AndroidConfig.Manifest.getMainApplicationOrThrow(config.modResults);
         const newTextProcessorActivity = {
-            $: {
-                "android:name": activityName,
-                "android:label": activityLabel,
-                "android:exported": "true",
-                "android:launchMode": activityLaunchMode,
-                "android:theme": androidTheme,
+            '$': {
+                'android:name': activityName,
+                'android:label': activityLabel,
+                'android:exported': 'true',
+                'android:launchMode': activityLaunchMode,
+                'android:theme': androidTheme,
             },
-            "intent-filter": [
+            'intent-filter': [
                 {
                     action: [
                         {
                             $: {
-                                "android:name": "android.intent.action.PROCESS_TEXT",
+                                'android:name': 'android.intent.action.PROCESS_TEXT',
                             },
                         },
                     ],
                     category: [
                         {
                             $: {
-                                "android:name": "android.intent.category.DEFAULT",
+                                'android:name': 'android.intent.category.DEFAULT',
                             },
                         },
                     ],
                     data: [
                         {
                             $: {
-                                "android:mimeType": "text/plain",
+                                'android:mimeType': 'text/plain',
                             },
                         },
                     ],
@@ -87,6 +155,12 @@ const withAndroidProcessTextActivity = (config) => {
             androidTheme: ANDROID_THEME,
         });
     });
+    config = modifyAndroidStyles(config);
     return config;
 };
-exports.default = config_plugins_1.createRunOncePlugin(withAndroidProcessTextActivity, "withAndroidProcessTextActivity");
+const config = {
+    name: 'rn-action-process-text',
+    slug: 'rn-action-process-text',
+};
+// export default withAndroidProcessTextActivity(config);
+exports.default = (0, config_plugins_1.createRunOncePlugin)(withAndroidProcessTextActivity, config.name);
